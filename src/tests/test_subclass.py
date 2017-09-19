@@ -131,6 +131,33 @@ def test_derived_class():
     assert id(x) == id(ob)
 
 
+@pytest.mark.skip(reason="FIXME: test fails")
+def test_derived_grandchild():
+    class A(SubClassTest):
+        def __init__(self):
+            self.foo()
+        def foo(self): self.string = 'A.foo'
+    class B(A):
+        def foo(self): self.string = 'B.foo'
+    assert A().string == 'A.foo'
+    assert B().string == 'B.foo'
+
+    class C(SubClassTest):
+        __namespace__ = "Python.Test.SubClassTest"
+        def __init__(self):
+            self.foo()
+        def foo(self): self.string = 'C.foo'
+    class D(C):
+        def foo(self): self.string = 'D.foo'
+    assert C().string == 'C.foo'
+    assert D().string == 'D.foo'
+
+    class E(C):
+        __namespace__ = "Python.Test.SubClassTest"
+        def foo(self): self.string = 'E.foo'
+    assert E().string == 'E.foo'
+
+
 @pytest.mark.skip(reason="FIXME: test randomly pass/fails")
 def test_create_instance():
     """Test derived instances can be created from managed code"""
